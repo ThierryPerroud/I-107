@@ -3,16 +3,21 @@
 # Description:          Sends some ETH to the whole class
 # Author:               Thierry Perroud
 # Creation date:        28.04.2026
-# Modified by:          -
-# Modification date:    -
-# Version:              1.0
+# Modified by:          Thierry Perroud
+# Modification date:    05.05.2026
+# Version:              1.1
 #***********************************************************************************************************************
+import json
+
 from web3 import Web3
 import os
+from dotenv import load_dotenv
+import json
 
 # ==========================================================
 # CONFIGURATION
 # ==========================================================
+load_dotenv()
 
 # URL RPC de la blockchain privée CPNV
 RPC_URL = "http://10.229.43.182:8545"
@@ -21,7 +26,7 @@ RPC_URL = "http://10.229.43.182:8545"
 SENDER_ADDRESS = "0xdc6EdB5D91E1e26A80eCAC4cF4BAB6936b25A011"
 
 # Clé privée
-PRIVATE_KEY = os.environ["PRIVATE_KEY"]
+PRIVATE_KEY = os.getenv("PRIVATE_KEY")
 
 # Montant à envoyer (en ETH)
 AMOUNT_TO_SEND = 0.1
@@ -51,12 +56,12 @@ def lire_adresses(fichier):
     adresses = []
 
     with open(fichier, "r") as f:
-        for ligne in f:
-            adresse = ligne.strip()
+        data = json.load(f)
 
-            # Vérifier que l’adresse est valide
-            if __________________________:
-                adresses.append(adresse)
+    for adresse, name in data.items():
+        # Vérifier que l’adresse est valide
+        if w3.is_checksum_address(adresse):
+            adresses.append(adresse)
 
     return adresses
 
@@ -69,8 +74,8 @@ def afficher_soldes(adresses):
     Affiche le solde de chaque adresse
     """
     for adresse in adresses:
-        balance_wei = ________________________
-        balance_eth = ________________________
+        balance_wei = w3.eth.get_balance(adresse)
+        balance_eth = w3.from_wei(balance_wei, "ether")
 
         print(f"{adresse} : {balance_eth} ETH")
 
@@ -86,17 +91,17 @@ def envoyer_eth(destinataire, montant_eth, nonce):
     transaction = {
         "nonce": nonce,
         "to": destinataire,
-        "value": ____________________________,
-        "gas": ______________________________,
-        "gasPrice": _________________________,
-        "chainId": __________________________
+        "value": w3.to_wei(montant_eth, "ether"),
+        "gas": 21000,
+        "gasPrice": w3.eth.gas_price,
+        "chainId": w3.eth.chain_id,
     }
 
     # Signature de la transaction
-    signed_tx = _______________________________
+    signed_tx = w3.eth.account.sign_transaction(transaction, PRIVATE_KEY)
 
     # Envoi sur le réseau
-    tx_hash = _________________________________
+    tx_hash = w3.eth.send_raw_transaction(signed_tx.raw_transaction)
 
     return tx_hash.hex()
 
@@ -105,14 +110,14 @@ def envoyer_eth(destinataire, montant_eth, nonce):
 # PROGRAMME PRINCIPAL
 # ==========================================================
 def main():
-    adresses = lire_adresses("adresses.txt")
+    adresses = lire_adresses("adresses.json")
 
     print("\n=== Soldes avant envoi ===")
 
     afficher_soldes(adresses)
 
     # Récupération du nonce initial
-    nonce = __________________________________
+    nonce = w3.eth.get_transaction_count(SENDER_ADDRESS)
 
     print("\n=== Envoi des transactions ===")
 
@@ -128,7 +133,7 @@ def main():
             print(f"Hash : {tx_hash}")
 
             # Incrément du nonce
-            nonce += _______
+            nonce += 1
 
         except Exception as e:
             print(f"Erreur : {e}")
