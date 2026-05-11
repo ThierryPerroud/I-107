@@ -3,9 +3,9 @@
 # Description:          Generates a SHA-256 output for a message or a file
 # Author:               Thierry Perroud
 # Creation date:        27.04.2026
-# Modified by:          -
-# Modification date:    -
-# Version:              1.0
+# Modified by:          Thierry Perroud
+# Modification date:    11.05.2026
+# Version:              1.1
 #***********************************************************************************************************************
 #***********************************************************************************************************************
 # Imports
@@ -97,16 +97,30 @@ def hash_file():
 
     :return: SHA-256 hashed file
     """
-    # TODO
-    file = input(f"\nEntrez le nom du fichier à hacher: ")
+    ### User file path input ###
+    filepath = input(f"\nEntrez le chemin du fichier à hacher: ")
 
-    hashed_file = ""
+    try:
+        ### SHA-256 hash ###
+        with open(filepath, "rb") as file:
+            file_data = file.read()
+            hashed_file = hashlib.sha256(file_data).hexdigest()
 
-    return file, hashed_file
+        ### Output ###
+        print(f"SHA-256 : {hashed_file}\n")
+
+        return filepath, hashed_file
+
+    except FileNotFoundError:
+        print(f"\n[ERREUR] Le fichier n'existe pas.")
+        return filepath, None
+
+
 
 
 def save_hash(text, hashed_text):
     # TODO
+    print(f"Fonctionnalité non implémentée.")
     pass
 
 
