@@ -25,6 +25,7 @@ URI =  "https://raw.githubusercontent.com/ThierryPerroud/I-107/refs/heads/master
 # Adresse et ABI du contrat déployé
 contract_address = "0x9A8C8E2EB8F6fA1Bd7EF9161417F64E48bf54225"
 second_contract_address = "0x54b7226b364a90D1B7D5Acb403C9d7B360E2b3b2"
+third_contract_address = "0xb5913CF61fcbc543375FCba1A00BB6aB1fd093c0"
 deployer_address = "0xdc6EdB5D91E1e26A80eCAC4cF4BAB6936b25A011"
 recipient_address = "0xdc6EdB5D91E1e26A80eCAC4cF4BAB6936b25A011"
 
@@ -36,7 +37,7 @@ with open("./SimpleMintContract.abi", "r") as abi_file:
     contract_abi = json.load(abi_file)
 
 # Charger le contrat
-nft_contract = w3.eth.contract(address=contract_address, abi=contract_abi)
+nft_contract = w3.eth.contract(address=third_contract_address, abi=contract_abi)
 
 # Étape 1 : Mint du token
 nonce = w3.eth.get_transaction_count(sender_address)
