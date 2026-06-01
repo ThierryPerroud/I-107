@@ -20,7 +20,7 @@ private_key = os.getenv("PRIVATE_KEY")
 w3 = Web3(Web3.HTTPProvider("http://10.229.43.182:8545"))  # Remplacez par l'URL de votre nœud
 assert w3.is_connected(), "Échec de la connexion au nœud Ethereum"
 
-URI =  "./NFT_metadata.json"
+URI =  "https://raw.githubusercontent.com/ThierryPerroud/I-107/refs/heads/master/NFT_metadata.json"
 
 # Adresse et ABI du contrat déployé
 contract_address = "0x9A8C8E2EB8F6fA1Bd7EF9161417F64E48bf54225"
