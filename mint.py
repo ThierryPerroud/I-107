@@ -21,6 +21,7 @@ w3 = Web3(Web3.HTTPProvider("http://10.229.43.182:8545"))  # Remplacez par l'URL
 assert w3.is_connected(), "Échec de la connexion au nœud Ethereum"
 
 URI =  "https://raw.githubusercontent.com/ThierryPerroud/I-107/refs/heads/master/NFT_metadata.json"
+URI2 = "https://raw.githubusercontent.com/ThierryPerroud/I-107/refs/heads/master/NFT2_metadata.json"
 
 # Adresse et ABI du contrat déployé
 contract_address = "0x9A8C8E2EB8F6fA1Bd7EF9161417F64E48bf54225"
@@ -48,7 +49,7 @@ nft_contract = w3.eth.contract(address=thierry_perroud_contract_address, abi=con
 # Étape 1 : Mint du token
 nonce = w3.eth.get_transaction_count(sender_address)
 valueEth = 0.05
-mint_txn = nft_contract.functions.mint(URI).build_transaction({
+mint_txn = nft_contract.functions.mint(URI2).build_transaction({
     "chainId": 32383,  # ID de votre blockchain privée ou testnet
     "gas": 2000000,
     "gasPrice": w3.to_wei("10", "gwei"),
@@ -61,7 +62,7 @@ signed_mint_txn = w3.eth.account.sign_transaction(mint_txn, private_key)
 try:
     # Fait un test avant pour savoir si tout est en ordre, si c'est bon ça passe sinon 
     # ça leve l'exception
-    mint_check = nft_contract.functions.mint(URI).call({
+    mint_check = nft_contract.functions.mint(URI2).call({
         "from": sender_address,
         "value": w3.to_wei(valueEth, "ether")  # Prix du mint défini dans le contrat
     })
